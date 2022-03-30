@@ -1,0 +1,21 @@
+import seaborn as sb
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn import linear_model as lm
+
+path_house=r"C:\Users\Warhead980\PycharmProjects\pythonProject\Data\house_train.csv"
+ht = pd.read_csv(path_house)
+
+htm = ht.loc[ht["LotArea"] < ht["LotArea"].quantile(0.95)]
+plt.xlabel("area")
+plt.ylabel("price")
+
+reg = lm.LinearRegression()
+reg.fit(htm[["LotArea"]], htm.SalePrice)
+
+print("The coefficient m is : ", reg.coef_)
+print("The Y intercept b is : ", reg.intercept_)
+
+plt.scatter(htm.LotArea, htm.SalePrice, s=1, color="red")
+plt.plot(htm.LotArea, reg.predict(htm[["LotArea"]]))
+plt.show()
