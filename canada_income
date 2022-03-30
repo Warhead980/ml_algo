@@ -1,0 +1,25 @@
+import seaborn as sb
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn import linear_model as lm
+
+
+path_canada = r"C:\Users\Warhead980\PycharmProjects\pythonProject\Data\Canada per capita income.csv"
+i = pd.read_csv(path_canada)
+plt.scatter(i.area, i.prices, s=2)
+plt.xlabel("Area")
+plt.ylabel("Prices")
+
+im = lm.LinearRegression()
+im.fit(i[["area"]], i.prices)
+
+plt.plot(i.area, im.predict(i[["area"]]), color="red")
+
+to_predict = 10000
+predicted = im.predict([[to_predict]])
+data = [[to_predict, round(float(predicted), 4)]]
+
+dataframe = pd.DataFrame(data)
+dataframe.to_csv(path_canada, index=False, mode='a', header=False)
+
+plt.show()
