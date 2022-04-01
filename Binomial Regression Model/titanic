@@ -1,0 +1,34 @@
+import pandas as pd
+from sklearn import linear_model
+
+
+# load the data set into a Pandas data frame, and print out the first few rows
+titanic_path = r"C:\Users\Warhead980\PycharmProjects\pythonProject\Data\titanic_dataset.csv"
+df = pd.read_csv(titanic_path, header=0)
+print(df.head(10))
+
+# Drop the columns that our model will not use
+df = df.drop(['Name', 'Siblings/Spouses Aboard', 'Parents/Children Aboard', 'Fare'], axis=1)
+
+# print the top 10 rows
+print(df.head(10))
+
+print("Number of NaN values in dataset are ", df.isnull().sum().sum())
+
+df = df.replace(to_replace={'female': 1, 'male': 2})
+
+print(df.head(10))
+
+# formula= m1*x1 + m2*x2 + m3*x3 + b
+# x1,x2,x3 are independent variables or features
+# m1,m2,m3 are respective coefficients
+# b is the intercept
+
+reg = linear_model.LinearRegression()
+reg.fit(df[["Pclass", "Sex", "Age"]], df.Survived)
+
+print("Regression coefficients are : ", reg.coef_)
+print("Intercept is : ", reg.intercept_)
+
+p = reg.predict([[1, 1, 16]])
+print(p)
