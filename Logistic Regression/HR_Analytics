@@ -1,0 +1,68 @@
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+import seaborn as sns
+import numpy as np
+
+path = r"C:\Users\Warhead980\PycharmProjects\pythonProject\Data\HR_Analytics.csv"
+df = pd.read_csv(path)
+print(df.head(10))
+plt.scatter(df[["satisfaction_level"]], df.left)
+# plt.show()
+
+df=df.replace(["low", "medium","high"], [1, 2, 3])
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(df[[
+    "satisfaction_level",
+    "promotion_last_5years",
+    'salary',
+    'average_montly_hours']], df.left, train_size=0.8)
+
+print(X_test)
+
+from sklearn.linear_model import LogisticRegression
+from sklearn import metrics
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+y_predicted = model.predict(X_test)
+y_pred=model.predict_proba(X_test)
+print("Model score is ",model.score(X_test,y_test))
+print("Y predicted is ",y_predicted)
+print("Coefficient is ",model.coef_)
+print("Intercept is ",model.intercept_)
+
+cnf_matrix = metrics.confusion_matrix(y_test, y_predicted)
+
+class_names=[0,1] # name  of classes
+fig, ax = plt.subplots()
+tick_marks = np.arange(len(class_names))
+plt.xticks(tick_marks, class_names)
+plt.yticks(tick_marks, class_names)
+# create heatmap
+sns.heatmap(pd.DataFrame(cnf_matrix), annot=True, cmap="YlGnBu" ,fmt='g')
+ax.xaxis.set_label_position("top")
+plt.tight_layout()
+plt.title('Confusion matrix', y=1.1)
+plt.ylabel('Actual label')
+plt.xlabel('Predicted label')
+plt.show()
+
+
+import math
+def sigmoid(x):
+  return 1 / (1 + math.exp(-x))
+
+def prediction_function(sl, p, s, h):
+    z = (-3.80309292e+00 * sl)+(-1.15376034e+00*p)+(-6.26059520e-01*s)+(2.48308237e-03*h) + 1.44091708
+    y = sigmoid(z)
+    return y
+
+satisfaction = 0.5
+promotion = 1
+salary = 2
+hours = 250
+print(prediction_function(satisfaction, promotion, salary, hours))
